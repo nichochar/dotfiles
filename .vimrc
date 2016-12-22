@@ -7,7 +7,8 @@ filetype plugin indent on
 nnoremap ; :
 
 set nowrap
-" set tabstop=4
+set clipboard=unnamed
+set mouse=a
 set backspace=indent,eol,start
 set autoindent
 set smartindent
