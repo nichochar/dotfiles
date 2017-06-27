@@ -1,4 +1,5 @@
 call pathogen#infect()
+
 " syntax on
 filetype indent on
 filetype plugin indent on
@@ -6,24 +7,29 @@ filetype plugin indent on
 " This is a big one, remap : for ;
 nnoremap ; :
 
+"set cursorline          " highlight current line
+set wildmenu            " visual autocomplete for command menu
+
+set ttyfast
+set encoding=utf-8
 set nowrap
-set clipboard=unnamed
-set mouse=a
+set tabstop=4           " number of visual spaces per TAB
+set softtabstop=4       " number of spaces in tab when editing
+set expandtab           " tabs are spaces
 set backspace=indent,eol,start
 set autoindent
 set smartindent
 set copyindent
-set expandtab
-set cursorline
-set encoding=utf8
 set number
+set lazyredraw          " redraw only when you need to
+set ttyfast
 set shiftwidth=4
-set showmatch " show matching parentheses
-set ignorecase " for searching
-set smartcase " if caps in search, use
+set showmatch           " show matching parentheses
+set ignorecase          " for searching
+set smartcase           " if caps in search, use
 
-set hlsearch " highlight search terms
-set incsearch " show searches as you type
+set hlsearch            " highlight search terms
+set incsearch           " show searches as you type
 
 set history=1000
 set undolevels=1000
@@ -33,38 +39,43 @@ set visualbell " dont beep
 
 set nobackup
 set noswapfile
-
-
-"split navigations
-nnoremap <C-J> <C-W><C-J>
-nnoremap <C-K> <C-W><C-K>
-nnoremap <C-L> <C-W><C-L>
-nnoremap <C-H> <C-W><C-H>
-set splitbelow
 set splitright
 
-" Only set list for certain filetypes
-autocmd filetype python,ruby,javascript,css set list
+set list
 set listchars=tab:>.,trail:.,extends:#,nbsp:. " make spaces and tabs visible
-" autocmd filetype html,xml set listchars-=tab:>. " dont show spaces in html
+autocmd filetype html,xml,sql set listchars-=tab:>. " dont show spaces for these filetypes
+autocmd filetype sql set listchars-=trail:. " dont show trailing whites for these filetypes
 
-" javascript linting, found on
-" https://jaxbot.me/articles/setting-up-vim-for-react-js-jsx-02-03-2015
-" Enable jsx syntax highlighter in normal js files
-let g:jsx_ext_required = 0 " Allow JSX in normal JS files
-let g:syntastic_javascript_checkers=['eslint']
+" Autocasting filetypes
+autocmd BufNewFile,BufRead *.pp set ft=java
+autocmd BufNewFile,BufRead *.html,*.shtml,*.stm,*.nunjucks set ft=jinja
+autocmd BufNewFile,BufRead *.ql set ft=sql
 
-" Javascript
-autocmd filetype javascript,html,jinja set shiftwidth=2
+autocmd filetype yaml set shiftwidth=2
+
+" Elixir
+
 set pastetoggle=<F2> " if i paste a hardcore html, dosnt indent like an idiot
 
 set mouse=a " set the mouse
 
 set clipboard=unnamed " global clipboard for the OS
 
+nnoremap <Leader>\ :nohls<CR>
+
+" Better window navigation
+nnoremap <C-h> <C-w>h
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-l> <C-w>l
+nnoremap <Leader>= <C-w>=
+nnoremap <Leader><BS> <C-o>
+
+nnoremap <Leader>] :vertical resize +15<CR>
+nnoremap <Leader>[ :vertical resize -15<CR>
+
 let g:tagbar_usearrows = 1
 nnoremap <leader>l :TagbarToggle<CR>
-
 
 syntax enable
 set background=dark
@@ -74,27 +85,61 @@ let g:solarized_contrast="high"
 let g:solarized_visibility="high"
 colorscheme solarized
 
+" Powerline
+set laststatus=2
+
+" Ag
+set runtimepath^=~/.vim/bundle/ag
+
+" Ctrl-P
+set runtimepath^=~/.vim/bundle/ctrlp.vim
+let g:ctrlp_cache_dir = $HOME . '/.cache/ctrlp'
+let g:ctrlp_by_filename = 0
+let g:ctrlp_working_path_mode = 'ra'
+let g:ctrlp_max_depth=40
+let g:ctrlp_max_files=0
+if executable('ag')
+  let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+else
+    let g:ctrlp_user_command = 'find %s -type f' " MacOSX/Linux
+endif
+let g:ctrlp_match_func = { 'match': 'pymatcher#PyMatch' }
+
+" Command-T
+let g:CommandTMaxFiles=20000
+let g:CommandTMaxCacheDirectories=10
+let g:CommandTInputDebounce=100 " TODO: tweak this.
+let g:CommandTFileScanner='watchman'
+
 " this is for css-colors
 let g:cssColorVimDoNotMessMyUpdatetime = 1
 
-" syntastic
-let g:syntastic_python_checkers=['flake8']
-
+" Python
 " http://stackoverflow.com/questions/2360249/vim-automatically-removes-indentation-on-python-comments
 inoremap # X<BS>#
+let g:pymode_rope=0
+" Using enhanced python syntax from
+" https://github.com/hdima/python-syntax
+let python_highlight_all = 1
+
+" syntastic
+let g:syntastic_python_checkers=['flake8']
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 2
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+
+" Don't comppile java like an idiot
+" http://stackoverflow.com/questions/15937042/syntastic-disable-automatic-compilation-of-java
+let g:syntastic_mode_map = { 'mode': 'active', 'active_filetypes': ['foo', 'bar'], 'passive_filetypes': ['java'] }
 
 " NERDTree stuff
 let NERDTreeIgnore = ['\.pyc$']
-map <leader>p :NERDTreeToggle<CR>
-
-" This function allows to do a google search WOOT
-function! Google()
-   call inputsave()
-   let searchterm = input('Google: ')
-   call inputrestore()
-   return searchterm
-endfunction
-map <leader>g <ESC>:! /usr/bin/open -a "/Applications/Google Chrome.app" 'https://google.com/search?q=<C-R>=Google()<CR>'<CR><CR>
+map <leader>, :NERDTreeToggle<CR>
 
 " This is for json viewing https://coderwall.com/p/faceag
 map <leader>json :%!python -m json.tool
@@ -110,18 +155,7 @@ nnoremap <Leader>rtw :%s/\s\+$//e<CR>
 " http://vim.wikia.com/wiki/Simple_Macros_to_quote_and_unquote_a_word
 " 'quote' a word
 nnoremap qw :silent! normal mpea'<Esc>bi'<Esc>`pl
-" double quote a word
+" double "quote" a word
 nnoremap qd :silent! normal mpea"<Esc>bi"<Esc>`pl
 " remove quotes from a word
 nnoremap wq :silent! normal mpeld bhd `ph<CR>
-
-" Go
-let g:go_highlight_functions = 1
-let g:go_highlight_methods = 1
-let g:go_highlight_structs = 1
-let g:go_highlight_operators = 1
-let g:go_highlight_build_constraints = 1
-
-" Ag
-set runtimepath^=~/.vim/bundle/ag
-
