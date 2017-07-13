@@ -7,7 +7,7 @@ filetype plugin indent on
 " This is a big one, remap : for ;
 nnoremap ; :
 
-"set cursorline          " highlight current line
+"set cursorline          " highlight current line, much slowness
 set wildmenu            " visual autocomplete for command menu
 
 set ttyfast
@@ -53,6 +53,13 @@ autocmd BufNewFile,BufRead *.ql set ft=sql
 
 autocmd filetype yaml set shiftwidth=2
 
+
+" Persistent undo/redo
+let undo_dir = "~/.vim/undodir"
+execute "silent ! mkdir -p" . undo_dir
+execute "silent set undodir=" . undo_dir
+set undofile
+
 " Elixir
 
 set pastetoggle=<F2> " if i paste a hardcore html, dosnt indent like an idiot
@@ -77,6 +84,7 @@ nnoremap <Leader>[ :vertical resize -15<CR>
 let g:tagbar_usearrows = 1
 nnoremap <leader>l :TagbarToggle<CR>
 
+" Colors
 syntax enable
 set background=dark
 let g:solarized_termtrans=1
@@ -88,7 +96,7 @@ colorscheme solarized
 " Powerline
 set laststatus=2
 
-" Ag
+" Use the silversearcher Ag
 set runtimepath^=~/.vim/bundle/ag
 
 " Ctrl-P
@@ -111,7 +119,7 @@ let g:CommandTMaxCacheDirectories=10
 let g:CommandTInputDebounce=100 " TODO: tweak this.
 let g:CommandTFileScanner='watchman'
 
-" this is for css-colors
+" this is for css-colors, it's greedy if set to 0
 let g:cssColorVimDoNotMessMyUpdatetime = 1
 
 " Python
