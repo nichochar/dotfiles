@@ -5,7 +5,7 @@ filetype indent on
 filetype plugin indent on
 
 " This is a big one, remap : for ;
-nnoremap ; :
+"nnoremap ; :
 
 "set cursorline          " highlight current line, much slowness
 set wildmenu            " visual autocomplete for command menu
@@ -52,6 +52,7 @@ autocmd BufNewFile,BufRead *.html,*.shtml,*.stm,*.nunjucks set ft=jinja
 autocmd BufNewFile,BufRead *.ql set ft=sql
 
 autocmd filetype yaml set shiftwidth=2
+autocmd filetype css set shiftwidth=2
 
 
 " Persistent undo/redo
@@ -130,20 +131,12 @@ let g:pymode_rope=0
 " https://github.com/hdima/python-syntax
 let python_highlight_all = 1
 
-" syntastic
-let g:syntastic_python_checkers=['flake8']
-set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%*
-
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 2
-let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 0
-
-" Don't comppile java like an idiot
-" http://stackoverflow.com/questions/15937042/syntastic-disable-automatic-compilation-of-java
-let g:syntastic_mode_map = { 'mode': 'active', 'active_filetypes': ['foo', 'bar'], 'passive_filetypes': ['java'] }
+" ALE
+let g:ale_linter_aliases = {'scratch': 'python'}
+let g:ale_sign_column_always = 1
+let g:ale_linters = {
+            \  'python': ['flake8']
+            \}
 
 " NERDTree stuff
 let NERDTreeIgnore = ['\.pyc$']
@@ -167,3 +160,13 @@ nnoremap qw :silent! normal mpea'<Esc>bi'<Esc>`pl
 nnoremap qd :silent! normal mpea"<Esc>bi"<Esc>`pl
 " remove quotes from a word
 nnoremap wq :silent! normal mpeld bhd `ph<CR>
+
+
+" Put these lines at the very end of your vimrc file.
+
+" Load all plugins now.
+" Plugins need to be added to runtimepath before helptags can be generated.
+packloadall
+" Load all of the helptags now, after plugins have been loaded.
+" All messages and errors will be ignored.
+silent! helptags ALL
