@@ -19,3 +19,6 @@
 [submodule "nerdtree"]
 	path = bundle/nerdtree
 	url = https://github.com/scrooloose/nerdtree
+[submodule "ale"]
+	path = bundle/ale
+	url = https://github.com/w0rp/ale.git
