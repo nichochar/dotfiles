@@ -24,6 +24,7 @@ set autoindent
 set clipboard=unnamedplus      " global clipboard for the OS
 set pastetoggle=<F2>           " if i paste a hardcore file like html, dont indent bad
 set number
+set cmdheight=2                " see more for the error messages
 
 
 " Autocasting filetypes
@@ -34,6 +35,8 @@ autocmd BufNewFile,BufRead *.ql set ft=sql
 autocmd filetype yaml set shiftwidth=2
 autocmd filetype css set shiftwidth=2
 autocmd filetype json set shiftwidth=2
+autocmd filetype javascript set shiftwidth=2
+autocmd filetype typescript set shiftwidth=2
 
 " Better window navigation
 nnoremap <C-h> <C-w>h
@@ -48,6 +51,8 @@ map <leader>json :%!jq .
 " Search and Replace
 nmap <Leader>s :%s//g<Left><Left>
 
+nnoremap <leader>\ :nohls<CR>
+
 " Tell Vim which characters to show for expanded TABs,
 " trailing whitespace, and end-of-lines. VERY useful!
 if &listchars ==# 'eol:$'
@@ -60,6 +65,7 @@ endif
 " =======
 call plug#begin('~/.config/nvim/plugged')
 Plug 'scrooloose/nerdtree'
+Plug 'preservim/nerdcommenter'
 Plug 'ryanoasis/vim-devicons'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
@@ -68,6 +74,7 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'nvim-lua/plenary.nvim' " required for telescope
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'tpope/vim-fugitive'
 " javascript
 Plug 'yuezk/vim-js'
 Plug 'leafgarland/typescript-vim'
@@ -80,6 +87,7 @@ Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 call plug#end()
 
 " CoC stuff
+let g:coc_global_extensions = ['coc-json', 'coc-git', 'coc-css', 'coc-elixir', 'coc-go', 'coc-html', 'coc-pyright', 'coc-sh', 'coc-tsserver']
 " Use tab for trigger completion with characters ahead and navigate.
 " NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
 " other plugin before putting this into your config.
@@ -119,7 +127,8 @@ nmap <silent> gr <Plug>(coc-references)
 
 " ALE configuration
 " fix with the :ALEFix command
-let b:ale_fixers = {'javascript': ['prettier', 'eslint']}
+let g:ale_linters = {'javascript': ['eslint']}
+let b:ale_fixers = {'javascript': ['prettier', 'eslint'], 'typescript': ['prettier', 'eslint']}
 " consider removing this if it's annoying
 let g:ale_fix_on_save = 1
 
@@ -133,3 +142,6 @@ nnoremap <leader>fg <cmd>Telescope live_grep<cr>
 
 colorscheme onedark
 let g:airline_theme='onedark'
+
+
+				
